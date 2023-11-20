@@ -6,6 +6,7 @@ This project implements a Snake game on an Arduino platform using LED matrices. 
 
 ## Table of Contents
 - [Introduction](#introduction)
+- [Meet The Team](#meet-the-team)
 - [Features](#features)
 - [Hardware Requirements](#hardware-requirements)
 - [Software Requirements](#software-requirements)
@@ -19,6 +20,15 @@ This project implements a Snake game on an Arduino platform using LED matrices. 
 ## Introduction
 
 This project utilizes Arduino and FastLED library to create a snake game that can be played on LED matrices. The game offers two distinct modes, allowing players to experience both classic snake gameplay and a unique mode based on apple colors.
+
+## Meet the Team
+
+| Sub Team | Name |
+| ------------- | ------------- |
+| Project Lead | Samuel Loon  |
+| Hardware Team  | Ong Yu Heng <br> Eliza H. Tanpoco <br> Ang Kai Xun  |
+| Software Team  | Lee Si, Heidi <br> Claire Chai Xin Yi <br> Angel Low Shu Hui <br> Joshua Pok  |
+| Computer Vision Team  | Wen Xi Xiong <br> Ng Zheng Ning |
 
 ## Features
 
