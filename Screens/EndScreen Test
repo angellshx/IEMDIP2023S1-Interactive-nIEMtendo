@@ -1,0 +1,105 @@
+#include <Adafruit_GFX.h>
+#include <Adafruit_NeoMatrix.h>
+#include <Adafruit_NeoPixel.h>
+#ifndef PSTR
+#define PSTR  // Make Arduino Due happy
+#endif
+
+#define PIN 13
+Adafruit_NeoMatrix matrix = Adafruit_NeoMatrix(20, 28, PIN,
+                                               NEO_MATRIX_TOP + NEO_MATRIX_LEFT + NEO_MATRIX_ROWS + NEO_MATRIX_ZIGZAG,
+                                               NEO_GRB + NEO_KHZ800);
+
+const int buttonPin_A = 2;
+const int buttonPin_B = 3;
+const int buttonPin_C = 4;
+const int buttonPin_D = 5;
+
+int buttonState_A = 0;
+int buttonState_B = 0;
+int buttonState_C = 0;
+int buttonState_D = 0;
+
+
+
+const uint16_t colors[] = {
+  matrix.Color(255, 0, 0), matrix.Color(0, 255, 0), matrix.Color(0, 0, 255)
+};
+
+void setup() {
+  matrix.begin();
+  matrix.setTextWrap(false);
+  matrix.setBrightness(40);
+  matrix.setTextColor(colors[0]);
+  matrix.setTextSize(1);
+
+
+  pinMode(buttonPin_A, INPUT);
+  pinMode(buttonPin_B, INPUT);
+  pinMode(buttonPin_C, INPUT);
+  pinMode(buttonPin_D, INPUT);
+}
+
+void drawHeart(uint32_t color) {
+  matrix.drawPixel(1, 21, color);
+  matrix.drawPixel(1, 22, color);
+  matrix.drawPixel(1, 23, color);
+  matrix.drawPixel(1, 24, color);
+  matrix.drawPixel(1, 25, color);
+  matrix.drawPixel(1, 26, color);
+  matrix.drawPixel(2, 21, color);
+  matrix.drawPixel(2, 26, color);
+  matrix.drawPixel(3, 22, color);
+  matrix.drawPixel(3, 25, color);
+  matrix.drawPixel(4, 23, color);
+  matrix.drawPixel(4, 24, color);
+}
+
+void drawRectangle(int x1, int y1, int x2, int y2, uint32_t color) {
+  // Draw the top and bottom edges
+  for (int x = x1; x <= x2; x++) {
+    matrix.drawPixel(x, y1, color);   // Top edge
+    matrix.drawPixel(x, y2, color);   // Bottom edge
+  }
+  
+  // Draw the left and right edges
+  for (int y = y1; y <= y2; y++) {
+    matrix.drawPixel(x1, y, color);   // Left edge
+    matrix.drawPixel(x2, y, color);   // Right edge
+  }
+}
+
+
+void loop() {
+
+  buttonState_A = digitalRead(buttonPin_A);
+  buttonState_B = digitalRead(buttonPin_B);
+  buttonState_C = digitalRead(buttonPin_C);
+  buttonState_D = digitalRead(buttonPin_D);
+
+  int x = matrix.width();
+  uint32_t blackColor = matrix.Color(0, 0, 0);
+  matrix.fillScreen(blackColor);
+  static int scrollX = 20;
+  matrix.setCursor(scrollX, 0);
+  matrix.print(F("GAME OVER"));
+  scrollX--;
+  if (scrollX < -100) {
+    scrollX = 20;
+  }
+  matrix.setCursor(scrollX, 9);
+  matrix.print(F("SCORE:"));
+  scrollX--;
+  if (scrollX < -100) {
+    scrollX = 20;
+  }
+  uint32_t redColor = matrix.Color(0, 0, 255);
+  drawRectangle(0, 20, 10, 27, redColor);
+  drawRectangle(11, 20, 19, 27, redColor);
+
+  uint32_t blueColor = matrix.Color(255, 0, 0);
+  drawHeart(blueColor);
+
+  matrix.show();
+  delay(100);
+}

@@ -1,0 +1,251 @@
+#include <Adafruit_GFX.h>
+#include <Adafruit_NeoMatrix.h>
+#include <Adafruit_NeoPixel.h>
+#ifndef PSTR
+#define PSTR  // Make Arduino Due happy
+#endif
+
+#define PIN 13
+Adafruit_NeoMatrix matrix = Adafruit_NeoMatrix(20, 28, PIN,
+                                               NEO_MATRIX_TOP + NEO_MATRIX_LEFT + NEO_MATRIX_ROWS + NEO_MATRIX_ZIGZAG,
+                                               NEO_GRB + NEO_KHZ800);
+
+const int buttonPin_A = 2;
+const int buttonPin_B = 3;
+const int buttonPin_C = 4;
+const int buttonPin_D = 5;
+
+int buttonState_A = 0;
+int buttonState_B = 0;
+int buttonState_C = 0;
+int buttonState_D = 0;
+
+
+
+const uint16_t colors[] = {
+  matrix.Color(255, 0, 0), matrix.Color(0, 255, 0), matrix.Color(0, 0, 255)
+};
+
+bool isTrue = true;
+int blockX = 0; // X-coordinate of the moving block
+int blockY = 10; // Y-coordinate of the moving block
+
+unsigned long lastDirectionChangeTime = 0;
+unsigned long directionChangeInterval = 0;
+
+
+void setup() {
+  matrix.begin();
+  matrix.setTextWrap(false);
+  matrix.setBrightness(40);
+  matrix.setTextColor(colors[0]);
+  matrix.setTextSize(1);
+
+
+  pinMode(buttonPin_A, INPUT);
+  pinMode(buttonPin_B, INPUT);
+  pinMode(buttonPin_C, INPUT);
+  pinMode(buttonPin_D, INPUT);
+}
+
+void drawPenis(uint32_t color) {
+matrix.drawPixel(14, 21, color);
+matrix.drawPixel(15, 21, color);
+matrix.drawPixel(13, 22, color);
+matrix.drawPixel(14, 22, color);
+matrix.drawPixel(15, 22, color);
+matrix.drawPixel(16, 22, color);
+matrix.drawPixel(12, 23, color);
+matrix.drawPixel(13, 23, color);
+matrix.drawPixel(14, 23, color);
+matrix.drawPixel(15, 23, color);
+matrix.drawPixel(16, 23, color);
+matrix.drawPixel(17, 23, color);
+matrix.drawPixel(13, 24, color);
+matrix.drawPixel(16, 24, color);
+matrix.drawPixel(13, 25, color);
+matrix.drawPixel(16, 25, color);
+}
+
+
+void drawHeart(uint32_t color) {
+  matrix.drawPixel(1, 21, color);
+  matrix.drawPixel(2, 21, color);
+  matrix.drawPixel(3, 21, color);
+  matrix.drawPixel(4, 21, color);
+  matrix.drawPixel(5, 21, color);
+  matrix.drawPixel(1, 22, color);
+  matrix.drawPixel(5, 22, color);
+  matrix.drawPixel(1, 23, color);
+  matrix.drawPixel(3, 23, color);
+  matrix.drawPixel(4, 23, color);
+  matrix.drawPixel(5, 23, color);
+  matrix.drawPixel(6, 23, color);
+  matrix.drawPixel(7, 23, color);
+  matrix.drawPixel(1, 24, color);
+  matrix.drawPixel(4, 24, color);
+  matrix.drawPixel(5, 24, color);
+  matrix.drawPixel(6, 24, color);
+  matrix.drawPixel(1, 25, color);
+  matrix.drawPixel(2, 25, color);
+  matrix.drawPixel(3, 25, color);
+  matrix.drawPixel(5, 25, color);
+}
+
+void drawRectangle(int x1, int y1, int x2, int y2, uint32_t color) {
+  // Draw the top and bottom edges
+  for (int x = x1; x <= x2; x++) {
+    matrix.drawPixel(x, y1, color);   // Top edge
+    matrix.drawPixel(x, y2, color);   // Bottom edge
+  }
+  
+  // Draw the left and right edges
+  for (int y = y1; y <= y2; y++) {
+    matrix.drawPixel(x1, y, color);   // Left edge
+    matrix.drawPixel(x2, y, color);   // Right edge
+  }
+}
+
+
+
+void moveRandomBlock()
+{
+    static int blockX[3] = {0, 0, 0};
+    static int blockY[3] = {10, 10, 10};
+    static int blockDirection = 0;  // 0: Right, 1: Left, 2: Down, 3: Up
+    static int lastBlockX[3] = {0, 0, 0};
+
+    // Check if it's time to change direction
+    unsigned long currentTime = millis();
+    if (currentTime - lastDirectionChangeTime >= directionChangeInterval)
+    {
+        blockDirection = random(4);  // Change direction to a random value (0-3)
+        lastDirectionChangeTime = currentTime;
+
+        // Generate a new random direction change interval (between 1 and 5 seconds)
+        directionChangeInterval = random(750, 1500); 
+    }
+
+    // Move the block based on the selected direction
+    for (int i = 2; i > 0; i--)
+    {
+        lastBlockX[i] = blockX[i];
+        blockX[i] = blockX[i - 1];
+        blockY[i] = blockY[i - 1];
+    }
+
+    if (blockDirection == 0)
+    {
+        blockX[0]++;  // Move right
+        if (blockX[0] >= matrix.width() - 1)
+        {
+            blockX[0] = 0;  // Wrap around to the left edge
+        }
+    }
+    else if (blockDirection == 1)
+    {
+        blockX[0]--;  // Move left
+        if (blockX[0] < 0)
+        {
+            blockX[0] = matrix.width() - 2;  // Wrap around to the right edge
+        }
+    }
+    else if (blockDirection == 2)
+    {
+        blockY[0]++;  // Move down
+        if (blockY[0] >= matrix.height() - 1)
+        {
+            blockY[0] = 0;  // Wrap around to the top edge
+        }
+    }
+    else if (blockDirection == 3)
+    {
+        blockY[0]--;  // Move up
+        if (blockY[0] < 0)
+        {
+            blockY[0] = matrix.height() - 2;  // Wrap around to the bottom edge
+        }
+    }
+
+    // Clear the old position of the block
+    for (int i = 0; i < 3; i++)
+    {
+        matrix.drawPixel(lastBlockX[i], blockY[i], matrix.Color(0, 0, 0));
+    }
+
+    // Draw the block at the new position
+    for (int i = 0; i < 3; i++)
+    {
+        matrix.drawPixel(blockX[i], blockY[i], matrix.Color(255, 0, 255)); // Purple
+    }
+}
+
+
+
+
+
+
+
+void loop() {
+
+  buttonState_A = digitalRead(buttonPin_A);
+  buttonState_B = digitalRead(buttonPin_B);
+  buttonState_C = digitalRead(buttonPin_C);
+  buttonState_D = digitalRead(buttonPin_D);
+
+  if (buttonState_A == HIGH) {
+  isTrue = !isTrue;
+
+}
+
+
+  int x = matrix.width();
+  uint32_t blackColor = matrix.Color(0, 0, 0);
+  matrix.fillScreen(blackColor);
+  static int scrollX = 20;
+  matrix.setCursor(scrollX, 0);
+  matrix.setTextColor(colors[1]);
+  matrix.print(F("VICTORY"));
+  scrollX--;
+  if (scrollX < -100) {
+    scrollX = 20;
+  }
+  matrix.setCursor(scrollX, 9);
+   matrix.setTextColor(matrix.Color(255, 165, 0)); // Set text color to green
+  matrix.print(F("SCORE:"));
+  scrollX--;
+  if (scrollX < -100) {
+    scrollX = 20; 
+  }
+if (buttonState_B == HIGH) {
+    // Check which option is selected and execute accordingly
+    if (isTrue) {
+      // retry
+    } else {
+      // go to home
+    }
+  }
+  
+
+  uint32_t leftRectColor, rightRectColor;
+
+  // Set the rectangle colors based on the value of isTrue
+  if (isTrue) {
+    leftRectColor = matrix.Color(0, 255, 0); // Green
+    rightRectColor = matrix.Color(0, 0, 255); // Blue
+  } else {
+    leftRectColor = matrix.Color(0, 0, 255); // Blue
+    rightRectColor = matrix.Color(0, 255, 0); // Green
+  }
+  drawRectangle(0, 20, 10, 27, leftRectColor);
+  drawRectangle(11, 20, 19, 27, rightRectColor);
+
+  uint32_t blueColor = matrix.Color(255, 0, 0);
+  drawHeart(blueColor);
+  drawPenis(blueColor);
+
+  moveRandomBlock();
+
+  matrix.show();
+  delay(100);
+}
