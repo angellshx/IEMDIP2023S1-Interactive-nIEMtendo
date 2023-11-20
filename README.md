@@ -27,19 +27,24 @@ This project utilizes Arduino and FastLED library to create a snake game that ca
 
 ## Hardware Requirements
 
-- Arduino board
-- LED matrices
-- FastLED compatible LEDs
+- Arduino Mega 2560 CH340
+- Raspberry Pi 4 Model B
+- Pi Camera3
+- WS2812B LEDS (749 leds)
 - Gesture sensor (DFRobot_PAJ7620U2)
-- Buttons for controls
-- Other components specific to your setup
+- Generic arcade buttons for controls
+- Frosted acrylic screen
+- Speakers with AUX cable
+- Speaker Module
 
 ## Software Requirements
 
 - Arduino IDE
+- Python
 - FastLED library
+- Adafruit NeoMatrix libary
 - DFRobot_PAJ7620U2 library
-- LinkedList library (if used)
+- LinkedList library 
 
 ## Installation
 
