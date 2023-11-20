@@ -26,7 +26,7 @@ This project utilizes Arduino and FastLED library to create a snake game that ca
 | Sub Team | Name |
 | ------------- | ------------- |
 | Project Lead | Samuel Loon  |
-| Hardware Team  | Ong Yu Heng <br> Eliza H. Tanpoco <br> Ang Kai Xun  |
+| Hardware Team  | Ong Yu Heng <br> Tanpoco Eliza Halog <br> Ang Kai Xun  |
 | Software Team  | Lee Si, Heidi <br> Claire Chai Xin Yi <br> Angel Low Shu Hui <br> Joshua Pok  |
 | Computer Vision Team  | Wen Xi Xiong <br> Ng Zheng Ning |
 
