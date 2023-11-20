@@ -2,6 +2,8 @@
 
 This project implements a Snake game on an Arduino platform using LED matrices. It includes two game modes: classic snake and a mode where the snake needs to eat apples based on their colors.
 
+![](Images/nIEMtendo.jpg)
+
 ## Table of Contents
 - [Introduction](#introduction)
 - [Features](#features)
